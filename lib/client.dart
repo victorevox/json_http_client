@@ -4,10 +4,10 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'constants.dart';
 
-class HttpAuthClient implements http.Client {
+class JsonHttpClient implements http.Client {
   http.Client _httpClient;
 
-  HttpAuthClient({http.Client client}) {
+  JsonHttpClient({http.Client client}) {
     _httpClient = client is http.Client ? client : http.Client();
   }
 
