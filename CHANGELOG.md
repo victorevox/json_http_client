@@ -1,3 +1,7 @@
+## [0.0.3] - 8/07/20.
+
+* Improve custom encoding
+
 ## [0.0.2] - 8/07/20.
 
 * Added response custom encoding override

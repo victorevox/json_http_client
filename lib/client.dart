@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 
+const String CONTENT_TYPE_HEADER = "Content-Type";
+
 class JsonHttpClient<T extends http.Client> implements http.Client {
   http.Client _httpClient;
   final Encoding encoding;
@@ -73,22 +75,32 @@ class JsonHttpClient<T extends http.Client> implements http.Client {
 
   Map<String, String> _getCustomHeaders(Map<String, String> headers) {
     final Map<String, String> baseHeaders = headers is Map ? headers : {};
-    baseHeaders.putIfAbsent("Content-Type", () => "application/json");
+    baseHeaders.putIfAbsent(CONTENT_TYPE_HEADER, () => "application/json");
     return baseHeaders;
   }
 
   http.Response getResponseWithCustomDecoder(http.Response response) {
     String decoded;
-    final codeUnits = response?.bodyBytes;
     try {
+      final codeUnits = response?.bodyBytes;
       decoded = encoding.decode(codeUnits);
     } catch (e) {
-      response.body;
+      decoded = response.body;
     }
+    final newHeaders = response.headers.map((key, value) {
+      if (RegExp(CONTENT_TYPE_HEADER, caseSensitive: false).hasMatch(key)) {
+        String defaultContentType = value;
+        final hasCharSet = RegExp("charset").hasMatch(defaultContentType ?? "");
+        if (!hasCharSet) {
+          return MapEntry(key, "$defaultContentType; charset=${encoding.name}");
+        }
+      }
+      return MapEntry(key, value);
+    });
     return http.Response(
       decoded,
       response.statusCode,
-      headers: response.headers,
+      headers: newHeaders,
       isRedirect: response.isRedirect,
       persistentConnection: response.persistentConnection,
       reasonPhrase: response.reasonPhrase,
