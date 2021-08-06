@@ -6,13 +6,13 @@ import 'package:json_http_client/client.dart';
 import 'package:json_http_client/constants.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import './mocks.dart';
+import 'shared_mocks.mocks.dart';
 
 void main() {
-  JsonHttpClient jsonClient;
+  late JsonHttpClient jsonClient;
   // We mockup a http client so that way we can spy on it
-  MockHttpClient mockHttpClient;
-  final String mockApiPath = "https://test.com/api";
+  late MockHttpClient mockHttpClient;
+  final Uri mockApiPath = Uri.dataFromString("https://test.com/api");
   final expectedHeaders = {"Content-Type": "application/json"};
 
   setUp(() {
@@ -76,7 +76,7 @@ void main() {
   });
 }
 
-stbMethodsOf(http.Client client, [String body = ""]) {
+stbMethodsOf(MockHttpClient client, [String body = ""]) {
   when(client.head(
     any,
     headers: anyNamed("headers"),

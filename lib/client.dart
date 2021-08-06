@@ -7,11 +7,11 @@ import 'package:http/http.dart' as http;
 const String CONTENT_TYPE_HEADER = "Content-Type";
 
 class JsonHttpClient<T extends http.Client> implements http.Client {
-  http.Client _httpClient;
+  late http.Client _httpClient;
   final Encoding encoding;
 
   JsonHttpClient({
-    http.Client client,
+    http.Client? client,
     this.encoding = utf8,
   }) {
     _httpClient = client is http.Client ? client : http.Client();
@@ -23,48 +23,48 @@ class JsonHttpClient<T extends http.Client> implements http.Client {
   }
 
   @override
-  Future<http.Response> delete(url, {Map<String, String> headers}) {
+  Future<http.Response> delete(url, {Map<String, String>? headers,  Object? body, Encoding? encoding}) {
     return _httpClient.delete(url, headers: _getCustomHeaders(headers)).then(getResponseWithCustomDecoder);
   }
 
   @override
-  Future<http.Response> get(url, {Map<String, String> headers}) {
+  Future<http.Response> get(url, {Map<String, String>? headers}) {
     return _httpClient.get(url, headers: _getCustomHeaders(headers)).then(getResponseWithCustomDecoder);
   }
 
   @override
-  Future<http.Response> head(url, {Map<String, String> headers}) {
+  Future<http.Response> head(url, {Map<String, String>? headers}) {
     return _httpClient.head(url, headers: _getCustomHeaders(headers)).then(getResponseWithCustomDecoder);
   }
 
   @override
-  Future<http.Response> patch(url, {Map<String, String> headers, body, Encoding encoding}) {
+  Future<http.Response> patch(url, {Map<String, String>? headers, body, Encoding? encoding}) {
     return _httpClient
         .patch(url, headers: _getCustomHeaders(headers), body: body, encoding: encoding)
         .then(getResponseWithCustomDecoder);
   }
 
   @override
-  Future<http.Response> post(url, {Map<String, String> headers, body, Encoding encoding}) {
+  Future<http.Response> post(url, {Map<String, String>? headers, body, Encoding? encoding}) {
     return _httpClient
         .post(url, headers: _getCustomHeaders(headers), body: body, encoding: encoding)
         .then(getResponseWithCustomDecoder);
   }
 
   @override
-  Future<http.Response> put(url, {Map<String, String> headers, body, Encoding encoding}) {
+  Future<http.Response> put(url, {Map<String, String>? headers, body, Encoding? encoding}) {
     return _httpClient
         .put(url, headers: _getCustomHeaders(headers), body: body, encoding: encoding)
         .then(getResponseWithCustomDecoder);
   }
 
   @override
-  Future<String> read(url, {Map<String, String> headers}) {
+  Future<String> read(url, {Map<String, String>? headers}) {
     return _httpClient.read(url, headers: _getCustomHeaders(headers));
   }
 
   @override
-  Future<Uint8List> readBytes(url, {Map<String, String> headers}) {
+  Future<Uint8List> readBytes(url, {Map<String, String>? headers}) {
     return _httpClient.readBytes(url, headers: _getCustomHeaders(headers));
   }
 
@@ -73,8 +73,8 @@ class JsonHttpClient<T extends http.Client> implements http.Client {
     return _httpClient.send(request);
   }
 
-  Map<String, String> _getCustomHeaders(Map<String, String> headers) {
-    final Map<String, String> baseHeaders = headers is Map ? headers : {};
+  Map<String, String> _getCustomHeaders(Map<String, String>? headers) {
+    final Map<String, String> baseHeaders = headers?? {};
     baseHeaders.putIfAbsent(CONTENT_TYPE_HEADER, () => "application/json");
     return baseHeaders;
   }
@@ -82,7 +82,7 @@ class JsonHttpClient<T extends http.Client> implements http.Client {
   http.Response getResponseWithCustomDecoder(http.Response response) {
     String decoded;
     try {
-      final codeUnits = response?.bodyBytes;
+      final codeUnits = response.bodyBytes;
       decoded = encoding.decode(codeUnits);
     } catch (e) {
       decoded = response.body;
@@ -90,7 +90,7 @@ class JsonHttpClient<T extends http.Client> implements http.Client {
     final newHeaders = response.headers.map((key, value) {
       if (RegExp(CONTENT_TYPE_HEADER, caseSensitive: false).hasMatch(key)) {
         String defaultContentType = value;
-        final hasCharSet = RegExp("charset").hasMatch(defaultContentType ?? "");
+        final hasCharSet = RegExp("charset").hasMatch(defaultContentType);
         if (!hasCharSet) {
           return MapEntry(key, "$defaultContentType; charset=${encoding.name}");
         }
