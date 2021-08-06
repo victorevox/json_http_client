@@ -1,3 +1,5 @@
+## [1.0.0] - 6/08/21.
+* Null-Safety support
 ## [0.0.3] - 8/07/20.
 
 * Improve custom encoding
