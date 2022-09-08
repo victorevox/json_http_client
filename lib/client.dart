@@ -23,7 +23,7 @@ class JsonHttpClient<T extends http.Client> implements http.Client {
   }
 
   @override
-  Future<http.Response> delete(url, {Map<String, String>? headers,  Object? body, Encoding? encoding}) {
+  Future<http.Response> delete(url, {Map<String, String>? headers, Object? body, Encoding? encoding}) {
     return _httpClient.delete(url, headers: _getCustomHeaders(headers)).then(getResponseWithCustomDecoder);
   }
 
@@ -70,11 +70,13 @@ class JsonHttpClient<T extends http.Client> implements http.Client {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
-    return _httpClient.send(request);
+    return _httpClient.send(
+      request..headers.addAll(_getCustomHeaders(request.headers)),
+    );
   }
 
   Map<String, String> _getCustomHeaders(Map<String, String>? headers) {
-    final Map<String, String> baseHeaders = headers?? {};
+    final Map<String, String> baseHeaders = headers ?? {};
     baseHeaders.putIfAbsent(CONTENT_TYPE_HEADER, () => "application/json");
     return baseHeaders;
   }
