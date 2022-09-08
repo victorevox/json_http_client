@@ -1,3 +1,6 @@
+## [1.1.0] - 8/08/22
+* Set custom header also in send method
+
 ## [1.0.0] - 6/08/21.
 * Null-Safety support
 ## [0.0.3] - 8/07/20.
