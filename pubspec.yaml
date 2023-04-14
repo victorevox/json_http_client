@@ -1,5 +1,5 @@
 name: json_http_client
-description: A new Flutter package project.
+description: A simple Flutter package for making HTTP requests with JSON content for Automatically sets `Content-Type` header to `application/json`
 version: 1.2.0
 author: null
 homepage: https://github.com/victorevox/json_http_client
