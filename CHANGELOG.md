@@ -1,3 +1,6 @@
+## [1.2.0] - 8/08/22
+* Updated README
+
 ## [1.1.0] - 8/08/22
 * Set custom header also in send method
 
